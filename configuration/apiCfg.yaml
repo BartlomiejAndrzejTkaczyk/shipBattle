@@ -1,0 +1,4 @@
+apiUrl: https://go-pjatk-server.fly.dev/api
+initUrl: https://go-pjatk-server.fly.dev/api/game
+boardUrl: https://go-pjatk-server.fly.dev/api/game/board
+authTokenName: X-Auth-Token
