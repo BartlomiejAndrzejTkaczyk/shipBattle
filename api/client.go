@@ -38,9 +38,9 @@ func (c *Client) StartGameConnect(gameOptions *models.GameOptions) {
 		TargetNick string `json:"target_nick"`
 		Wpbot      bool   `json:"wpbot"`
 	}{
-		Nick:       *gameOptions.PlayerNick,
-		TargetNick: *gameOptions.OpponentNick,
-		Wpbot:      *gameOptions.IsBot,
+		Nick:       gameOptions.PlayerNick,
+		TargetNick: gameOptions.OpponentNick,
+		Wpbot:      gameOptions.IsBot,
 	})
 
 	responseBody := bytes.NewBuffer(postBody)

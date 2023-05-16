@@ -16,8 +16,8 @@ type App struct {
 	gameOptions *models.GameOptions
 }
 
-func (app *App) Run(gameOptions models.GameOptions) {
-	app.gameOptions = app.Screen.UserMenu(app.Client.OppoList(), gameOptions)
+func (app *App) Run() {
+	app.gameOptions = app.Screen.UserMenu(app.Client.OppoList())
 
 	app.Screen.Start()
 	app.beginBattle()
@@ -32,6 +32,7 @@ func (app *App) beginBattle() {
 	for range ticker {
 		status, _ := app.status()
 		if status.GameStatus != "waiting" {
+
 			app.Screen.SetNicknames(status.Nick, status.Opponent)
 			app.board()
 			return
@@ -74,9 +75,11 @@ func (app *App) mainBattleLoop() {
 			if status.ShouldFire {
 				app.fire(status.OppShots)
 			}
+		case "ended":
+			app.Screen.EndScreen(status)
 		case "waiting":
-			time.Sleep(1 * time.Second)
 		}
+		time.Sleep(1 * time.Second)
 	}
 
 }

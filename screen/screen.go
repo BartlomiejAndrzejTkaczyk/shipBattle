@@ -163,23 +163,20 @@ func (s *Screen) Log(format string, args ...interface{}) {
 	s.ui.Log(format, args...)
 }
 
-func (s *Screen) UserMenu(opponents []modelsApi.OpponentInfo, defaultGameOptions models.GameOptions) *models.GameOptions {
-	gameOptions := defaultGameOptions
+func (s *Screen) UserMenu(opponents []modelsApi.OpponentInfo) *models.GameOptions {
+	gameOptions := models.GameOptions{}
 
 	reader := bufio.NewReader(os.Stdin)
 
-	if gameOptions.IsBot == nil {
-		fmt.Print("Do you want to play with a bot? (y/n): ")
-		isBot, err := reader.ReadString('\n')
-		if err != nil {
-			log.Panic(err)
-		}
-		isBot = strings.TrimSpace(isBot)
-		temp := isBot == "y"
-		gameOptions.IsBot = &temp
+	fmt.Print("Do you want to play with a bot? (y/n): ")
+	isBot, err := reader.ReadString('\n')
+	if err != nil {
+		log.Panic(err)
 	}
+	isBot = strings.TrimSpace(isBot)
+	gameOptions.IsBot = isBot == "y"
 
-	if !*gameOptions.IsBot {
+	if !gameOptions.IsBot {
 		fmt.Println("Select an opponent:")
 		for i, oppo := range opponents {
 			fmt.Printf("%d. %s (%s)\n", i+1, oppo.Nick, oppo.GameStatus)
@@ -193,25 +190,29 @@ func (s *Screen) UserMenu(opponents []modelsApi.OpponentInfo, defaultGameOptions
 		oppoNum, err := strconv.Atoi(oppoNumStr)
 		if err != nil || oppoNum < 0 || oppoNum > len(opponents) {
 			fmt.Println("Invalid input. Please enter a valid opponent number.")
-			return s.UserMenu(opponents, gameOptions)
+			return s.UserMenu(opponents)
 		}
 		if oppoNum == 0 {
-			temp2 := ""
-			gameOptions.OpponentNick = &temp2
+			gameOptions.OpponentNick = ""
 		} else {
-			gameOptions.OpponentNick = &opponents[oppoNum-1].Nick
+			gameOptions.OpponentNick = opponents[oppoNum-1].Nick
 		}
 	}
-
-	if gameOptions.PlayerNick == nil {
-		fmt.Print("Enter your nickname: ")
-		playerNick, err := reader.ReadString('\n')
-		if err != nil {
-			log.Panic(err)
-		}
-		playerNick = strings.TrimSpace(playerNick)
-		gameOptions.PlayerNick = &playerNick
+	fmt.Print("Enter your nickname: ")
+	playerNick, err := reader.ReadString('\n')
+	if err != nil {
+		log.Panic(err)
 	}
-
+	playerNick = strings.TrimSpace(playerNick)
+	gameOptions.PlayerNick = playerNick
 	return &gameOptions
+}
+
+func (s *Screen) EndScreen(status *modelsApi.StatusResponse) {
+	s.ui.Remove(s.myBoard)
+	s.ui.Remove(s.opponenBoard)
+	s.ui.Remove(s.exitKayTxt)
+	s.ui.Remove(s.fireInfo)
+
+	s.ui.Draw(gui.NewText(0, 0, status.Desc, nil))
 }
