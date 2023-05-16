@@ -13,6 +13,8 @@ type ApiCfg struct {
 	InitUrl       string `yaml:"initUrl"`
 	BoardUrl      string `yaml:"boardUrl"`
 	AuthTokenName string `yaml:"authTokenName"`
+	FireUrl       string `yaml:"fireUrl"`
+	OppoListUrl   string `yaml:"oppoListUrl"`
 }
 
 // todo check how to get relative path to file in easier way

@@ -7,6 +7,6 @@ import (
 
 type IClient interface {
 	GetBoard(ctx context.Context) ([]string, error)
-	Connect()
+	StartGameConnect()
 	Status(ctx context.Context) (*api.StatusResponse, error)
 }
